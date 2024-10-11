@@ -4,19 +4,19 @@ import React, { createContext, useState } from 'react';
 export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  const [activities, setActivities] = useState([
-    { id: 1, name: 'Running' },
-    { id: 2, name: 'Swimming' }
-  ]);
+  const [activities, setActivities] = useState([]);
   
-  const [diet, setDiet] = useState([
-    { id: 1, name: 'Breakfast - Eggs' },
-    { id: 2, name: 'Lunch - Salad' }
-  ]);
+  const [diet, setDiet] = useState([]);
+
+  const addActivity = (newActivity) => {
+    console.log(newActivity)
+    setActivities([...activities, { id: activities.length + 1, ...newActivity }]);
+  };
 
   return (
-    <AppContext.Provider value={{ activities, diet }}>
+    <AppContext.Provider value={{ activities, diet, addActivity }}>
       {children}
     </AppContext.Provider>
   );
 };
+

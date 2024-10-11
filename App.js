@@ -7,6 +7,7 @@ import Activities from './Screens/Activities';
 import Diet from './Screens/Diet';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { AppProvider } from './context/AppContext';
+import AddActivity from './Screens/AddActivity';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -42,6 +43,7 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name="Tabs" component={Tabs} />
+          <Stack.Screen name="AddActivity" component={AddActivity} options={{ title: 'Add Activity' }} />
         </Stack.Navigator>
       </NavigationContainer>
     </AppProvider>
