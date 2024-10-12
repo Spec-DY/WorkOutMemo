@@ -6,7 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { AppContext } from '../context/AppContext';
 
 const AddActivity = ({ navigation }) => {
-  const { addActivity } = useContext(AppContext);
+  const { addActivity, theme, themeStyles } = useContext(AppContext);
   
   const [activityType, setActivityType] = useState(null);
   const [open, setOpen] = useState(false);
@@ -45,7 +45,7 @@ const AddActivity = ({ navigation }) => {
   };
 
   return (
-    <View style={{ padding: 20 }}>
+    <View style={{ flex: 1, padding: 20, backgroundColor: themeStyles[theme].backgroundColor }}>
       <Text>Activity Type</Text>
       <DropDownPicker
         open={open}

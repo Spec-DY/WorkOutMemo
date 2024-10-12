@@ -4,7 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { AppContext } from '../context/AppContext';
 
 const AddDietEntry = ({ navigation }) => {
-  const { addDietEntry } = useContext(AppContext);
+  const { addDietEntry, theme, themeStyles } = useContext(AppContext);
 
   const [description, setDescription] = useState('');
   const [calories, setCalories] = useState('');
@@ -34,7 +34,7 @@ const AddDietEntry = ({ navigation }) => {
   };
 
   return (
-    <View style={{ padding: 20 }}>
+    <View style={{ flex: 1, padding: 20, backgroundColor: themeStyles[theme].backgroundColor }}>
       <Text>Description</Text>
       <TextInput
         value={description}

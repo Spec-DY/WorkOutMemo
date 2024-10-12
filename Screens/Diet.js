@@ -2,10 +2,10 @@
 import React, { useContext,useLayoutEffect } from 'react';
 import ItemsList from '../Components/ItemsList';
 import { AppContext } from '../context/AppContext';
-import { Button } from 'react-native';
+import { Button, View, Text } from 'react-native';
 
 const Diet = ({navigation}) => {
-  const { diet } = useContext(AppContext);
+  const { diet, theme, themeStyles } = useContext(AppContext);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -18,7 +18,14 @@ const Diet = ({navigation}) => {
     });
   }, [navigation]);
 
-  return <ItemsList type="diet" entries={diet} />;
+  return (
+    
+    <View style={{flex: 1, backgroundColor: themeStyles[theme].backgroundColor}}>
+      <ItemsList type="diet" entries={diet} />
+    </View>
+
+
+  ) 
 };
 
 export default Diet;

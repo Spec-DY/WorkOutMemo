@@ -2,11 +2,11 @@
 import React, { useContext, useLayoutEffect } from 'react';
 import ItemsList from '../Components/ItemsList';
 import { AppContext } from '../context/AppContext';
-import { Button } from 'react-native';
+import { Button, View } from 'react-native';
 
 
 const Activities = ({navigation}) => {
-  const { activities } = useContext(AppContext);
+  const { activities, theme, themeStyles } = useContext(AppContext);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -19,7 +19,11 @@ const Activities = ({navigation}) => {
     });
   }, [navigation]);
 
-  return <ItemsList type="activity" entries={activities} />;
+  return (
+    <View style={{ flex: 1, backgroundColor: themeStyles[theme].backgroundColor }}>
+      <ItemsList entries={activities} type="activity" />
+    </View>
+  );
 };
 
 export default Activities;
