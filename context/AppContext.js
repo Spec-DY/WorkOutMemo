@@ -26,12 +26,12 @@ export const AppProvider = ({ children }) => {
 
   const themeStyles = {
     light: {
-      backgroundColor: '#fff',
-      textColor: '#000'
+      backgroundColor: 'white',
+      textColor: 'black'
     },
     dark: {
-      backgroundColor: '#333',
-      textColor: '#fff'
+      backgroundColor: 'black',
+      textColor: 'white'
     }
   };
 

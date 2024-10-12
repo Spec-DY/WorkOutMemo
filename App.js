@@ -16,6 +16,7 @@ const Stack = createNativeStackNavigator();
 function Tabs() {
   return (
     <Tab.Navigator>
+      
       <Tab.Screen
         name="Activities"
         component={Activities}
@@ -23,9 +24,10 @@ function Tabs() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="bicycle-outline" size={size} color={color} />
           ),
+          headerTitleAlign:'center'
         }}
       />
-      
+
       <Tab.Screen
         name="Diet"
         component={Diet}
@@ -33,6 +35,7 @@ function Tabs() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="fast-food-outline" size={size} color={color} />
           ),
+          headerTitleAlign:'center'
         }}
       />
 
@@ -43,6 +46,7 @@ function Tabs() {
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings-outline" size={size} color={color} />
           ),
+          headerTitleAlign:'center'
         }}
       />
 
@@ -55,7 +59,7 @@ export default function App() {
     <AppProvider>
       <NavigationContainer>
         <Stack.Navigator>
-          <Stack.Screen name="Tabs" component={Tabs} />
+          <Stack.Screen name="Tabs" component={Tabs} options={{headerShown:false}} />
           <Stack.Screen name="AddActivity" component={AddActivity} options={{ title: 'Add Activity' }} />
           <Stack.Screen name="AddDietEntry" component={AddDietEntry} options={{ title: 'Add Diet Entry' }} />
         </Stack.Navigator>

@@ -35,23 +35,26 @@ const AddDietEntry = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, padding: 20, backgroundColor: themeStyles[theme].backgroundColor }}>
-      <Text>Description</Text>
+      <Text style={{ color: themeStyles[theme].textColor }}>Description</Text>
       <TextInput
+        style={{ color: themeStyles[theme].textColor }}
         value={description}
         onChangeText={setDescription}
         placeholder="Enter description"
       />
 
-      <Text>Calories</Text>
+      <Text style={{ color: themeStyles[theme].textColor }}>Calories</Text>
       <TextInput
+        style={{ color: themeStyles[theme].textColor }}
         keyboardType="numeric"
         value={calories}
         onChangeText={setCalories}
         placeholder="Enter calories"
       />
 
-      <Text>Date</Text>
+      <Text style={{ color: themeStyles[theme].textColor }}>Date</Text>
       <TextInput
+        style={{ color: themeStyles[theme].textColor }}
         value={date.toDateString()}
         onPressIn={() => setShowDatePicker(true)}
       />

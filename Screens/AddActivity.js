@@ -46,7 +46,7 @@ const AddActivity = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, padding: 20, backgroundColor: themeStyles[theme].backgroundColor }}>
-      <Text>Activity Type</Text>
+      <Text style={{ color: themeStyles[theme].textColor }}>Activity Type</Text>
       <DropDownPicker
         open={open}
         value={activityType}
@@ -56,16 +56,23 @@ const AddActivity = ({ navigation }) => {
         setItems={setItems}
       />
 
-      <Text>Duration (in minutes)</Text>
+      <Text style={{ color: themeStyles[theme].textColor }}>Duration (in minutes)</Text>
       <TextInput
+        style={
+          [
+            { color: themeStyles[theme].textColor },
+            styles.input
+          ]
+        }
         keyboardType="numeric"
         value={duration}
         onChangeText={setDuration}
         placeholder="Enter duration"
       />
 
-      <Text>Date</Text>
+      <Text style={{ color: themeStyles[theme].textColor }}>Date</Text>
       <TextInput
+        style={{ color: themeStyles[theme].textColor }}
         value={date.toDateString()}
         onPressIn={() => setShowDatePicker(true)}
         />
@@ -82,6 +89,16 @@ const AddActivity = ({ navigation }) => {
       <Button title="Cancel" onPress={() => navigation.goBack()} />
     </View>
   );
+};
+
+const styles = {
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc', 
+    borderRadius: 5,
+    padding: 10,
+    marginVertical: 10,
+  },
 };
 
 export default AddActivity;

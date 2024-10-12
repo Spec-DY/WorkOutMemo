@@ -1,7 +1,13 @@
 import React from 'react';
 import { FlatList, Text, View } from 'react-native';
+import { useContext } from 'react';
+import { AppContext } from '../context/AppContext';
 
 const ItemsList = ({ entries, type }) => {
+
+  const { theme, themeStyles } = useContext(AppContext);
+
+
   return (
     <FlatList
       data={entries}
@@ -13,7 +19,7 @@ const ItemsList = ({ entries, type }) => {
 
         return (
           <View style={{ padding: 10, borderBottomWidth: 1, borderColor: '#ddd' }}>
-            <Text>
+            <Text style={{ color: themeStyles[theme].textColor }}>
             {type === 'activity' ? (
               <>
                 <Text>{item.type}</Text>
