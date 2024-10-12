@@ -1,4 +1,3 @@
-// App.js
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -8,6 +7,7 @@ import Diet from './Screens/Diet';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { AppProvider } from './context/AppContext';
 import AddActivity from './Screens/AddActivity';
+import AddDietEntry from './Screens/AddDietEntry';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -44,6 +44,7 @@ export default function App() {
         <Stack.Navigator>
           <Stack.Screen name="Tabs" component={Tabs} />
           <Stack.Screen name="AddActivity" component={AddActivity} options={{ title: 'Add Activity' }} />
+          <Stack.Screen name="AddDietEntry" component={AddDietEntry} options={{ title: 'Add Diet Entry' }} />
         </Stack.Navigator>
       </NavigationContainer>
     </AppProvider>

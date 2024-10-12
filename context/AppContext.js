@@ -13,8 +13,13 @@ export const AppProvider = ({ children }) => {
     setActivities([...activities, { id: activities.length + 1, ...newActivity }]);
   };
 
+  const addDietEntry = (newDietEntry) => {
+    console.log(newDietEntry)
+    setDiet([...diet, { id: diet.length + 1, ...newDietEntry }]);
+  };
+
   return (
-    <AppContext.Provider value={{ activities, diet, addActivity }}>
+    <AppContext.Provider value={{ activities, diet, addActivity, addDietEntry }}>
       {children}
     </AppContext.Provider>
   );

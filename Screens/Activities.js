@@ -19,7 +19,7 @@ const Activities = ({navigation}) => {
     });
   }, [navigation]);
 
-  return <ItemsList type="activities" entries={activities} />;
+  return <ItemsList type="activity" entries={activities} />;
 };
 
 export default Activities;
