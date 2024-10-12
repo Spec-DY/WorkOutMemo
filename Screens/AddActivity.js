@@ -4,6 +4,7 @@ import { View, Text, TextInput, Button, Alert } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AppContext } from '../context/AppContext';
+import commonStyles from '../Styles/styles';
 
 const AddActivity = ({ navigation }) => {
   const { addActivity, theme, themeStyles } = useContext(AppContext);
@@ -56,12 +57,17 @@ const AddActivity = ({ navigation }) => {
         setItems={setItems}
       />
 
-      <Text style={{ color: themeStyles[theme].textColor }}>Duration (in minutes)</Text>
+      <Text style={
+        [
+          { color: themeStyles[theme].textColor },
+          commonStyles.description
+        ]
+      }>Duration (in minutes)</Text>
       <TextInput
         style={
           [
             { color: themeStyles[theme].textColor },
-            styles.input
+            commonStyles.input
           ]
         }
         keyboardType="numeric"
@@ -70,9 +76,19 @@ const AddActivity = ({ navigation }) => {
         placeholder="Enter duration"
       />
 
-      <Text style={{ color: themeStyles[theme].textColor }}>Date</Text>
+      <Text style={
+        [
+          { color: themeStyles[theme].textColor },
+          commonStyles.description
+        ]
+      }>Date</Text>
       <TextInput
-        style={{ color: themeStyles[theme].textColor }}
+        style={
+          [
+            { color: themeStyles[theme].textColor },
+            commonStyles.input
+          ]
+        }
         value={date.toDateString()}
         onPressIn={() => setShowDatePicker(true)}
         />
@@ -91,14 +107,5 @@ const AddActivity = ({ navigation }) => {
   );
 };
 
-const styles = {
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc', 
-    borderRadius: 5,
-    padding: 10,
-    marginVertical: 10,
-  },
-};
 
 export default AddActivity;

@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AppContext } from '../context/AppContext';
+import commonStyles from '../Styles/styles';
 
 const AddDietEntry = ({ navigation }) => {
   const { addDietEntry, theme, themeStyles } = useContext(AppContext);
@@ -35,26 +36,56 @@ const AddDietEntry = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, padding: 20, backgroundColor: themeStyles[theme].backgroundColor }}>
-      <Text style={{ color: themeStyles[theme].textColor }}>Description</Text>
+      <Text style={
+          [
+            { color: themeStyles[theme].textColor },
+            commonStyles.description
+          ]
+        }>Description</Text>
       <TextInput
-        style={{ color: themeStyles[theme].textColor }}
+        style={
+            [
+              { color: themeStyles[theme].textColor },
+              commonStyles.input
+            ]
+          }
         value={description}
         onChangeText={setDescription}
         placeholder="Enter description"
       />
 
-      <Text style={{ color: themeStyles[theme].textColor }}>Calories</Text>
+      <Text style={
+          [
+            { color: themeStyles[theme].textColor },
+            commonStyles.description
+          ]
+        }>Calories</Text>
       <TextInput
-        style={{ color: themeStyles[theme].textColor }}
+        style={
+            [
+              { color: themeStyles[theme].textColor },
+              commonStyles.input
+            ]
+          }
         keyboardType="numeric"
         value={calories}
         onChangeText={setCalories}
         placeholder="Enter calories"
       />
 
-      <Text style={{ color: themeStyles[theme].textColor }}>Date</Text>
+      <Text style={
+          [
+            { color: themeStyles[theme].textColor },
+            commonStyles.description
+          ]
+        }>Date</Text>
       <TextInput
-        style={{ color: themeStyles[theme].textColor }}
+        style={
+            [
+              { color: themeStyles[theme].textColor },
+              commonStyles.input
+            ]
+          }
         value={date.toDateString()}
         onPressIn={() => setShowDatePicker(true)}
       />
