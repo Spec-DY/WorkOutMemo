@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { View, Text, Button, StyleSheet, Switch } from 'react-native';
 import { AppContext } from '../context/AppContext';
+import colors from '../Styles/colors';
 
 const Settings = () => {
   const { theme, toggleTheme, themeStyles } = useContext(AppContext);
@@ -10,9 +11,9 @@ const Settings = () => {
   return (
     <View style={[styles.container, { backgroundColor: themeStyles[theme].backgroundColor }]}>
       <Switch
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-            thumbColor={isDarkMod ? "#f5dd4b" : "#f4f3f4"}
-            ios_backgroundColor="#3e3e3e"
+            trackColor={colors.trackColor}
+            thumbColor={isDarkMod ? colors.thumbColor.dark : colors.thumbColor.light}
+            ios_backgroundColor={colors.iosBackgroundColor}
             // toogleTheme callback
             onValueChange={toggleTheme}
             value={isDarkMod}

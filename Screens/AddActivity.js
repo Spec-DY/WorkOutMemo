@@ -101,8 +101,11 @@ const AddActivity = ({ navigation }) => {
           />
         ) : null}
 
-      <Button title="Save" onPress={handleSave} />
-      <Button title="Cancel" onPress={() => navigation.goBack()} />
+        <View style={{margin:10}}></View>
+        <Button title="Save" onPress={handleSave} />
+        <View style={{margin:10}}></View>
+        <Button title="Cancel" onPress={() => navigation.goBack()} />
+
     </View>
   );
 };
