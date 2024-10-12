@@ -8,6 +8,12 @@ export const AppProvider = ({ children }) => {
   
   const [diet, setDiet] = useState([]);
 
+  const [theme, setTheme] = useState('light');
+
+  const toggleTheme = () => {
+    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+  };
+
   const addActivity = (newActivity) => {
     console.log(newActivity)
     setActivities([...activities, { id: activities.length + 1, ...newActivity }]);
@@ -18,8 +24,19 @@ export const AppProvider = ({ children }) => {
     setDiet([...diet, { id: diet.length + 1, ...newDietEntry }]);
   };
 
+  const themeStyles = {
+    light: {
+      backgroundColor: '#fff',
+      textColor: '#000'
+    },
+    dark: {
+      backgroundColor: '#333',
+      textColor: '#fff'
+    }
+  };
+
   return (
-    <AppContext.Provider value={{ activities, diet, addActivity, addDietEntry }}>
+    <AppContext.Provider value={{ activities, diet, addActivity, addDietEntry, theme, toggleTheme, themeStyles }}>
       {children}
     </AppContext.Provider>
   );

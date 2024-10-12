@@ -8,6 +8,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { AppProvider } from './context/AppContext';
 import AddActivity from './Screens/AddActivity';
 import AddDietEntry from './Screens/AddDietEntry';
+import Settings from './Screens/Settings';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -24,6 +25,7 @@ function Tabs() {
           ),
         }}
       />
+      
       <Tab.Screen
         name="Diet"
         component={Diet}
@@ -33,6 +35,17 @@ function Tabs() {
           ),
         }}
       />
+
+      <Tab.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="settings-outline" size={size} color={color} />
+          ),
+        }}
+      />
+
     </Tab.Navigator>
   );
 }
