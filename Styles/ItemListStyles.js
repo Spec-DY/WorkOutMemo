@@ -22,19 +22,14 @@ const itemListStyles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  specialIcon: {
-    fontSize: 18,
-    color: 'red',
-  },
   detailsText: {
     fontSize: 16,
     marginTop: 5,
   },
   dateText: {
     fontSize: 14,
-    marginTop: 5,
-    color: '#888',
-  },
+    marginTop: 5
+  }
 });
 
 export default itemListStyles;
