@@ -27,7 +27,7 @@ const ItemsList = ({ entries, type }) => {
                 {type === 'activity' ? `${item.duration} Minutes` : `${item.calories} Calories`}
               </Text>
               <Text style={[itemListStyles.dateText, { color: themeStyles[theme].textColor }]}>
-                {date.toLocaleDateString()}
+                {date.toLocaleDateString()} 
               </Text>
           </View>
         );

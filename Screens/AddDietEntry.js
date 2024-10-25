@@ -9,7 +9,7 @@ const AddDietEntry = ({ navigation }) => {
 
   const [description, setDescription] = useState('');
   const [calories, setCalories] = useState('');
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleDateChange = (event, selectedDate) => {
@@ -86,16 +86,20 @@ const AddDietEntry = ({ navigation }) => {
               commonStyles.input
             ]
           }
-        value={date.toDateString()}
+        value={date ? date.toDateString(): null}
         onPressIn={() => setShowDatePicker(true)}
+        editable={false}
+        placeholder="Select a date"
       />
       {showDatePicker ? (
+        <View style={{ backgroundColor: theme === 'dark' ? '#fff' : themeStyles[theme].backgroundColor, padding: 10, borderRadius: 8 }}>
         <DateTimePicker
-          value={date}
+          value={date || new Date()}
           mode="date"
           display="inline"
           onChange={handleDateChange}
         />
+        </View>
       ) : null}
 
       <View style={{margin:10}}></View>
