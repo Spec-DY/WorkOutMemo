@@ -1,20 +1,69 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Activities from './Screens/Activities';
+import Diet from './Screens/Diet';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { AppProvider } from './context/AppContext';
+import AddActivity from './Screens/AddActivity';
+import AddDietEntry from './Screens/AddDietEntry';
+import Settings from './Screens/Settings';
 
-export default function App() {
+const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+function Tabs() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Tab.Navigator>
+      
+      <Tab.Screen
+        name="Activities"
+        component={Activities}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="bicycle-outline" size={size} color={color} />
+          ),
+          headerTitleAlign:'center'
+        }}
+      />
+
+      <Tab.Screen
+        name="Diet"
+        component={Diet}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="fast-food-outline" size={size} color={color} />
+          ),
+          headerTitleAlign:'center'
+        }}
+      />
+
+      <Tab.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="settings-outline" size={size} color={color} />
+          ),
+          headerTitleAlign:'center'
+        }}
+      />
+
+    </Tab.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default function App() {
+  return (
+    <AppProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Tabs" component={Tabs} options={{headerShown:false}} />
+          <Stack.Screen name="AddActivity" component={AddActivity} options={{ title: 'Add Activity' }} />
+          <Stack.Screen name="AddDietEntry" component={AddDietEntry} options={{ title: 'Add Diet Entry' }} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AppProvider>
+  );
+}
