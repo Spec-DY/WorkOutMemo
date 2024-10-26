@@ -1,11 +1,10 @@
-import React from 'react';
-import { FlatList, Text, View } from 'react-native';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
+import { FlatList, Text, View, Pressable } from 'react-native';
 import { AppContext } from '../context/AppContext';
 import itemListStyles from '../Styles/ItemListStyles';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-const ItemsList = ({ entries, type }) => {
+const ItemsList = ({ entries, type, navigation }) => {
   const { theme, themeStyles } = useContext(AppContext);
 
   return (
@@ -16,24 +15,43 @@ const ItemsList = ({ entries, type }) => {
         const date = item.date instanceof Date ? item.date : new Date(item.date);
 
         return (
-          <View style={[itemListStyles.itemContainer, { backgroundColor: themeStyles[theme].backgroundColor }]}>
-            <View style={itemListStyles.row}>
-                <Text style={[itemListStyles.typeText, { color: themeStyles[theme].textColor }]}>
-                  {type === 'activity' ? item.type : item.description}
-                </Text>
-                {item.isSpecial && <AntDesign name="star" size={24} color="orange" />}
-            </View>
-              <Text style={[itemListStyles.detailsText, { color: themeStyles[theme].textColor }]}>
+          <Pressable
+            onPress={() => navigation.navigate('EditScreen', { id: item.id, type })}
+            style={[
+              itemListStyles.itemContainer,
+              { backgroundColor: themeStyles[theme].backgroundColor, padding: 12, borderRadius: 8 },
+            ]}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Text style={[itemListStyles.typeText, { color: themeStyles[theme].textColor, fontWeight: 'bold', flex: 1 }]}>
+                {type === 'activity' ? item.type : item.description}
+              </Text>
+              {item.isSpecial && (
+                <AntDesign name="star" size={20} color="orange" style={{ marginRight: 8 }} />
+              )}
+              <Text style={[itemListStyles.dateText, styles.infoBox, { backgroundColor: '#6757A6', marginRight: 8 }]}>
+                {date.toDateString()}
+              </Text>
+              <Text style={[itemListStyles.detailsText, styles.infoBox, { backgroundColor: '#6757A6' }]}>
                 {type === 'activity' ? `${item.duration} Minutes` : `${item.calories} Calories`}
               </Text>
-              <Text style={[itemListStyles.dateText, { color: themeStyles[theme].textColor }]}>
-                {date.toLocaleDateString()} 
-              </Text>
-          </View>
+            </View>
+          </Pressable>
         );
       }}
     />
   );
+};
+
+const styles = {
+  infoBox: {
+    color: 'white',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    fontSize: 14,
+    overflow: 'hidden',
+  },
 };
 
 export default ItemsList;

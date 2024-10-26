@@ -7,6 +7,6 @@ export default {
       light: "#f4f3f4",
       dark: "#f5dd4b",
     },
-    iosBackgroundColor: "#3e3e3e",
+    iosBackgroundColor: "#3e3e3e"
   };
   
