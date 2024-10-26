@@ -1,18 +1,51 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, Button, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AppContext } from '../context/AppContext';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, updateDoc, collection, doc, getDoc } from 'firebase/firestore';
 import { database } from '../firebase/firebaseConfig';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import commonStyles from '../Styles/styles';
 
-const AddDietEntry = ({ navigation }) => {
+const AddDietEntry = ({ navigation, route }) => {
   const { theme, themeStyles } = useContext(AppContext);
+  const entryId = route.params?.entryId || null;
 
   const [description, setDescription] = useState('');
   const [calories, setCalories] = useState('');
   const [date, setDate] = useState(null);
+  const [isSpecial, setIsSpecial] = useState(false); // Holds the value saved in Firestore
+  const [isSpecialConfirmed, setIsSpecialConfirmed] = useState(false); // Checkbox state
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  useEffect(() => {
+    navigation.setOptions({ title: entryId ? 'Edit Diet Entry' : 'Add Diet Entry' });
+
+    if (entryId) {
+      // Fetch data if editing an existing entry
+      const fetchEntryData = async () => {
+        try {
+          const docRef = doc(database, 'diet', entryId);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setDescription(data.description || '');
+            setCalories(data.calories?.toString() || '');
+            setDate(data.date ? new Date(data.date) : new Date());
+            setIsSpecial(data.isSpecial || false);
+            setIsSpecialConfirmed(false);
+          }
+        } catch (error) {
+          console.error('Error fetching document:', error);
+          Alert.alert('Error', 'Could not load diet entry data.');
+        }
+      };
+      fetchEntryData();
+    } else if (Number(calories) > 800) {
+      setIsSpecial(true); // Automatically mark new high-calorie entries as special
+    }
+  }, [entryId, calories, navigation]);
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
@@ -22,27 +55,30 @@ const AddDietEntry = ({ navigation }) => {
   };
 
   const handleSave = async () => {
-    if (!description || !calories || isNaN(calories) || calories <= 0 || !Number.isInteger(parseFloat(calories))) {
-      Alert.alert('Invalid Input', 'Please provide valid data.');
-      return;
-    }
+    // Update isSpecial only if editing an existing entry with checkbox
+    const finalSpecialStatus = entryId ? isSpecialConfirmed : isSpecial;
 
-    const isSpecial = calories > 800;
+    const dietData = {
+      description,
+      calories: Number(calories),
+      date: date ? date.toISOString() : null,
+      isSpecial: finalSpecialStatus, // Final special status based on conditions
+    };
 
     try {
-      // Add a new document to the "diet" collection in Firestore
-      const docRef = await addDoc(collection(database, 'diet'), {
-        description,
-        calories: Number(calories),
-        date: date ? date.toISOString() : null, // Store date as ISO string or null
-        isSpecial,
-      });
-
-      console.log('Document written with ID: ', docRef.id);
-      navigation.goBack();  // Go back to the previous screen after saving
+      if (entryId) {
+        const docRef = doc(database, 'diet', entryId);
+        await updateDoc(docRef, dietData);
+        Alert.alert('Success', 'Diet entry updated successfully.');
+      } else {
+        await addDoc(collection(database, 'diet'), dietData);
+        Alert.alert('Success', 'Diet entry added successfully.');
+      }
+      navigation.goBack();
+      setIsSpecialConfirmed(false)
     } catch (error) {
-      console.error('Error adding document: ', error);
-      Alert.alert('Error', 'There was an error saving your diet entry.');
+      console.error('Error saving diet entry:', error);
+      Alert.alert('Error', 'There was an error saving the diet entry.');
     }
   };
 
@@ -65,7 +101,12 @@ const AddDietEntry = ({ navigation }) => {
         style={[{ color: themeStyles[theme].textColor }, commonStyles.input]}
         keyboardType="numeric"
         value={calories}
-        onChangeText={setCalories}
+        onChangeText={(value) => {
+          setCalories(value);
+          if (!entryId && Number(value) > 800) {
+            setIsSpecial(true); // Set special if new entry and calories > 800
+          }
+        }}
         placeholder="Enter calories"
       />
 
@@ -79,7 +120,7 @@ const AddDietEntry = ({ navigation }) => {
         editable={false}
         placeholder="Select a date"
       />
-      {showDatePicker ? (
+      {showDatePicker && (
         <View style={{ backgroundColor: theme === 'dark' ? '#fff' : themeStyles[theme].backgroundColor, padding: 10, borderRadius: 8 }}>
           <DateTimePicker
             value={date || new Date()}
@@ -88,9 +129,21 @@ const AddDietEntry = ({ navigation }) => {
             onChange={handleDateChange}
           />
         </View>
-      ) : null}
+      )}
 
-      <View style={{ margin: 10 }} />
+      {entryId && isSpecial && (
+        <BouncyCheckbox
+          isChecked={isSpecialConfirmed} // Track checkbox state
+          text="This item is marked as special. Select the checkbox if you would like to approve it."
+          fillColor="green"
+          unfillColor="white"
+          iconStyle={{ borderColor: 'green' }}
+          textStyle={{ color: themeStyles[theme].textColor, textDecorationLine: 'none' }}
+          onPress={(newValue) => setIsSpecialConfirmed(newValue)}
+          style={{ marginVertical: 10 }}
+        />
+      )}
+
       <Button title="Save" onPress={handleSave} />
       <View style={{ margin: 10 }} />
       <Button title="Cancel" onPress={() => navigation.goBack()} />

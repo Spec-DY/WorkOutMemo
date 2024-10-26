@@ -1,4 +1,3 @@
-
 import React, { useContext,useLayoutEffect, useEffect, useState } from 'react';
 import ItemsList from '../Components/ItemsList';
 import { AppContext } from '../context/AppContext';
@@ -34,7 +33,7 @@ const Diet = ({navigation}) => {
   return (
     
     <View style={{flex: 1, backgroundColor: themeStyles[theme].backgroundColor}}>
-      <ItemsList type="diet" entries={diet} />
+      <ItemsList type="diet" entries={diet} navigation={navigation}/>
     </View>
 
 

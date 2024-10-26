@@ -1,18 +1,25 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, TextInput, Button, Alert } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { AppContext } from '../context/AppContext';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, updateDoc, collection, doc, getDoc } from 'firebase/firestore';
 import { database } from '../firebase/firebaseConfig';
+import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import commonStyles from '../Styles/styles';
 
-const AddActivity = ({ navigation }) => {
+const AddActivity = ({ navigation, route }) => {
   const { theme, themeStyles } = useContext(AppContext);
-  
+  const entryId = route.params?.entryId || null;
+
   const [activityType, setActivityType] = useState(null);
+  const [duration, setDuration] = useState('');
+  const [date, setDate] = useState(null);
+  const [isSpecial, setIsSpecial] = useState(false);
+  const [isSpecialConfirmed, setIsSpecialConfirmed] = useState(false); // Checkbox state
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [open, setOpen] = useState(false);
-  const [items, setItems] = useState([
+  const [items] = useState([
     { label: 'Walking', value: 'Walking' },
     { label: 'Running', value: 'Running' },
     { label: 'Swimming', value: 'Swimming' },
@@ -22,9 +29,69 @@ const AddActivity = ({ navigation }) => {
     { label: 'Hiking', value: 'Hiking' },
   ]);
 
-  const [duration, setDuration] = useState('');
-  const [date, setDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  useEffect(() => {
+    navigation.setOptions({ title: entryId ? 'Edit Activity' : 'Add Activity' });
+
+    if (entryId) {
+      const fetchEntryData = async () => {
+        try {
+          const docRef = doc(database, 'activities', entryId);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setActivityType(data.type || '');
+            setDuration(data.duration?.toString() || '');
+            setDate(data.date ? new Date(data.date) : new Date());
+            setIsSpecial(data.isSpecial || false);
+            setIsSpecialConfirmed(false);
+          }
+        } catch (error) {
+          console.error('Error fetching document:', error);
+          Alert.alert('Error', 'Could not load activity data.');
+        }
+      };
+      fetchEntryData();
+    }
+  }, [entryId, navigation]);
+
+  const handleSave = async () => {
+    // Validate inputs
+    if (!activityType) {
+      Alert.alert('Invalid Input', 'Please select an activity type.');
+      return;
+    }
+    if (!duration || isNaN(duration) || Number(duration) <= 0 || !Number.isInteger(Number(duration))) {
+      Alert.alert('Invalid Input', 'Duration must be a valid integer.');
+      return;
+    }
+  
+    const finalSpecialStatus = entryId ? isSpecialConfirmed : isSpecial;
+  
+    const activityData = {
+      type: activityType,
+      duration: Number(duration),
+      date: date.toISOString(),
+      isSpecial: finalSpecialStatus,
+    };
+  
+    try {
+      if (entryId) {
+        const docRef = doc(database, 'activities', entryId);
+        await updateDoc(docRef, activityData);
+        Alert.alert('Success', 'Activity updated successfully.');
+      } else {
+        await addDoc(collection(database, 'activities'), activityData);
+        Alert.alert('Success', 'Activity added successfully.');
+      }
+      navigation.goBack();
+      setIsSpecialConfirmed(false);
+    } catch (error) {
+      console.error('Error saving activity:', error);
+      Alert.alert('Error', 'There was an error saving the activity.');
+    }
+  };
+  
 
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
@@ -33,30 +100,28 @@ const AddActivity = ({ navigation }) => {
     }
   };
 
-  const handleSave = async () => {
-    if (!activityType || !duration || isNaN(duration) || duration <= 0) {
-      Alert.alert('Invalid Input', 'Please provide valid data.');
-      return;
-    }
 
-    const isSpecial = (activityType === 'Running' || activityType === 'Weights') && duration > 60;
-
-    try {
-      // Add a new document to the "activities" collection in Firestore
-      const docRef = await addDoc(collection(database, 'activities'), {
-        type: activityType,
-        duration: Number(duration),
-        date: date.toISOString(),  // Convert to ISO string format
-        isSpecial
-      });
-
-      console.log('Document written with ID: ', docRef.id);
-      navigation.goBack();  // Go back to the previous screen after saving
-    } catch (error) {
-      console.error('Error adding document: ', error);
-      Alert.alert('Error', 'There was an error saving your activity.');
-    }
+  const handleDelete = () => {
+    Alert.alert('Delete Entry', 'Are you sure you want to delete this entry?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            const docRef = doc(database, 'activities', entryId);
+            await deleteDoc(docRef);
+            Alert.alert('Success', 'Entry deleted successfully.');
+            navigation.goBack();
+          } catch (error) {
+            console.error('Error deleting entry:', error);
+            Alert.alert('Error', 'There was an error deleting the entry.');
+          }
+        },
+      },
+    ]);
   };
+
 
   return (
     <View style={{ flex: 1, padding: 20, backgroundColor: themeStyles[theme].backgroundColor }}>
@@ -67,7 +132,9 @@ const AddActivity = ({ navigation }) => {
         items={items}
         setOpen={setOpen}
         setValue={setActivityType}
-        setItems={setItems}
+        placeholder="Select an activity"
+        style={{ backgroundColor: themeStyles[theme].backgroundColor }}
+        dropDownContainerStyle={{ backgroundColor: themeStyles[theme].backgroundColor }}
       />
 
       <Text style={[{ color: themeStyles[theme].textColor }, commonStyles.description]}>
@@ -77,7 +144,12 @@ const AddActivity = ({ navigation }) => {
         style={[{ color: themeStyles[theme].textColor }, commonStyles.input]}
         keyboardType="numeric"
         value={duration}
-        onChangeText={setDuration}
+        onChangeText={(value) => {
+          setDuration(value);
+          if (!entryId && (activityType === 'Running' || activityType === 'Weights') && Number(value) > 60) {
+            setIsSpecial(true);
+          }
+        }}
         placeholder="Enter duration"
       />
 
@@ -91,18 +163,28 @@ const AddActivity = ({ navigation }) => {
         editable={false}
         placeholder="Select a date"
       />
-      {showDatePicker ? (
-        <View style={{ backgroundColor: theme === 'dark' ? '#fff' : themeStyles[theme].backgroundColor, padding: 10, borderRadius: 8 }}>
-          <DateTimePicker
-            value={date || new Date()}
-            mode="date"
-            display="inline"
-            onChange={handleDateChange}
-          />
-        </View>
-      ) : null}
+      {showDatePicker && (
+        <DateTimePicker
+          value={date || new Date()}
+          mode="date"
+          display="inline"
+          onChange={handleDateChange}
+        />
+      )}
 
-      <View style={{ margin: 10 }} />
+      {entryId && isSpecial && (
+        <BouncyCheckbox
+          isChecked={isSpecialConfirmed} // Checkbox state
+          text="This item is marked as special. Select the checkbox if you would like to approve it."
+          fillColor="green"
+          unfillColor="white"
+          iconStyle={{ borderColor: 'green' }}
+          textStyle={{ color: themeStyles[theme].textColor, textDecorationLine: 'none' }}
+          onPress={(newValue) => setIsSpecialConfirmed(newValue)}
+          style={{ marginVertical: 10 }}
+        />
+      )}
+
       <Button title="Save" onPress={handleSave} />
       <View style={{ margin: 10 }} />
       <Button title="Cancel" onPress={() => navigation.goBack()} />

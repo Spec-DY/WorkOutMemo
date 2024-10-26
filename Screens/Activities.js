@@ -1,4 +1,3 @@
-
 import React, { useContext, useLayoutEffect, useState, useEffect } from 'react';
 import ItemsList from '../Components/ItemsList';
 import { AppContext } from '../context/AppContext';
@@ -34,7 +33,7 @@ const Activities = ({navigation}) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: themeStyles[theme].backgroundColor }}>
-      <ItemsList entries={activities} type="activity" />
+      <ItemsList entries={activities} type="activity" navigation={navigation} />
     </View>
   );
 };

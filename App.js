@@ -9,6 +9,7 @@ import { AppProvider } from './context/AppContext';
 import AddActivity from './Screens/AddActivity';
 import AddDietEntry from './Screens/AddDietEntry';
 import Settings from './Screens/Settings';
+import EditScreen from './Screens/EditScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -62,6 +63,7 @@ export default function App() {
           <Stack.Screen name="Tabs" component={Tabs} options={{headerShown:false}} />
           <Stack.Screen name="AddActivity" component={AddActivity} options={{ title: 'Add Activity' }} />
           <Stack.Screen name="AddDietEntry" component={AddDietEntry} options={{ title: 'Add Diet Entry' }} />
+          <Stack.Screen name="EditScreen" component={EditScreen} options={{ title: 'Edit' }} />
         </Stack.Navigator>
       </NavigationContainer>
     </AppProvider>
