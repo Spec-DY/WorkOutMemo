@@ -224,17 +224,11 @@ const AddActivity = ({ navigation, route }) => {
 
       <View>
         <PressableButton onPress={handleSave}>
-
             <Text>Save</Text>
-
         </PressableButton>
-
         <View style={{ margin: 10 }} />
-
         <PressableButton onPress={() => navigation.goBack()}>
-
             <Text>Cancel</Text>
-
         </PressableButton>
       </View>
     </View>
