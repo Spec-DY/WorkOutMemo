@@ -1,5 +1,7 @@
 
 import React, { createContext, useState } from 'react';
+import { buttonColorLight, buttonColorDark } from '../Styles/colors';
+
 
 export const AppContext = createContext();
 
@@ -27,11 +29,13 @@ export const AppProvider = ({ children }) => {
   const themeStyles = {
     light: {
       backgroundColor: 'white',
-      textColor: 'black'
+      textColor: 'black',
+      buttonColor: buttonColorLight
     },
     dark: {
       backgroundColor: 'black',
-      textColor: 'white'
+      textColor: 'white',
+      buttonColor: buttonColorDark
     }
   };
 
