@@ -7,6 +7,8 @@ import { addDoc, updateDoc, collection, doc, getDoc } from 'firebase/firestore';
 import { database } from '../firebase/firebaseConfig';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import commonStyles from '../Styles/styles';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { deleteDocument } from '../firebase/firebaseHelper';
 
 const AddActivity = ({ navigation, route }) => {
   const { theme, themeStyles } = useContext(AppContext);
@@ -30,7 +32,22 @@ const AddActivity = ({ navigation, route }) => {
   ]);
 
   useEffect(() => {
-    navigation.setOptions({ title: entryId ? 'Edit Activity' : 'Add Activity' });
+    navigation.setOptions({
+      title: entryId ? 'Edit Activity' : 'Add Activity',
+      headerRight: () =>
+        entryId && (
+          <Icon
+            name="trash"
+            size={24}
+            color="red"
+            onPress={handleDelete}
+          />
+        ),
+    });
+  }, [entryId, navigation]);
+
+
+  useEffect(() => {
 
     if (entryId) {
       const fetchEntryData = async () => {
@@ -65,32 +82,52 @@ const AddActivity = ({ navigation, route }) => {
       Alert.alert('Invalid Input', 'Duration must be a valid integer.');
       return;
     }
-  
-    const finalSpecialStatus = entryId ? isSpecialConfirmed : isSpecial;
-  
-    const activityData = {
-      type: activityType,
-      duration: Number(duration),
-      date: date.toISOString(),
-      isSpecial: finalSpecialStatus,
-    };
-  
-    try {
-      if (entryId) {
-        const docRef = doc(database, 'activities', entryId);
-        await updateDoc(docRef, activityData);
-        Alert.alert('Success', 'Activity updated successfully.');
-      } else {
-        await addDoc(collection(database, 'activities'), activityData);
-        Alert.alert('Success', 'Activity added successfully.');
-      }
-      navigation.goBack();
-      setIsSpecialConfirmed(false);
-    } catch (error) {
-      console.error('Error saving activity:', error);
-      Alert.alert('Error', 'There was an error saving the activity.');
+    if (!date) {
+      Alert.alert('Invalid Input', 'Date should not be empty.');
+      return;
     }
+  
+    Alert.alert(
+      'Confirm Save',
+      'Are you sure you want to save this activity?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Save',
+          onPress: async () => {
+            const finalSpecialStatus = entryId ? isSpecialConfirmed : isSpecial;
+  
+            const activityData = {
+              type: activityType,
+              duration: Number(duration),
+              date: date.toISOString(),
+              isSpecial: finalSpecialStatus,
+            };
+  
+            try {
+              if (entryId) {
+                const docRef = doc(database, 'activities', entryId);
+                await updateDoc(docRef, activityData);
+                Alert.alert('Success', 'Activity updated successfully.');
+              } else {
+                await addDoc(collection(database, 'activities'), activityData);
+                Alert.alert('Success', 'Activity added successfully.');
+              }
+              navigation.goBack();
+              setIsSpecialConfirmed(false);
+            } catch (error) {
+              console.error('Error saving activity:', error);
+              Alert.alert('Error', 'There was an error saving the activity.');
+            }
+          },
+        },
+      ]
+    );
   };
+  
   
 
   const handleDateChange = (event, selectedDate) => {
@@ -109,8 +146,7 @@ const AddActivity = ({ navigation, route }) => {
         style: 'destructive',
         onPress: async () => {
           try {
-            const docRef = doc(database, 'activities', entryId);
-            await deleteDoc(docRef);
+            await deleteDocument('activities', entryId); // Pass collection name and doc ID
             Alert.alert('Success', 'Entry deleted successfully.');
             navigation.goBack();
           } catch (error) {

@@ -6,6 +6,8 @@ import { addDoc, updateDoc, collection, doc, getDoc } from 'firebase/firestore';
 import { database } from '../firebase/firebaseConfig';
 import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import commonStyles from '../Styles/styles';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { deleteDocument } from '../firebase/firebaseHelper';
 
 const AddDietEntry = ({ navigation, route }) => {
   const { theme, themeStyles } = useContext(AppContext);
@@ -19,7 +21,21 @@ const AddDietEntry = ({ navigation, route }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
-    navigation.setOptions({ title: entryId ? 'Edit Diet Entry' : 'Add Diet Entry' });
+    navigation.setOptions({
+      title: entryId ? 'Edit Diet' : 'Add Diet',
+      headerRight: () =>
+        entryId && (
+          <Icon
+            name="trash"
+            size={24}
+            color="red"
+            onPress={handleDelete}
+          />
+        ),
+    });
+  }, [entryId, navigation]);
+
+  useEffect(() => {
 
     if (entryId) {
       // Fetch data if editing an existing entry
@@ -55,32 +71,83 @@ const AddDietEntry = ({ navigation, route }) => {
   };
 
   const handleSave = async () => {
-    // Update isSpecial only if editing an existing entry with checkbox
-    const finalSpecialStatus = entryId ? isSpecialConfirmed : isSpecial;
-
-    const dietData = {
-      description,
-      calories: Number(calories),
-      date: date ? date.toISOString() : null,
-      isSpecial: finalSpecialStatus, // Final special status based on conditions
-    };
-
-    try {
-      if (entryId) {
-        const docRef = doc(database, 'diet', entryId);
-        await updateDoc(docRef, dietData);
-        Alert.alert('Success', 'Diet entry updated successfully.');
-      } else {
-        await addDoc(collection(database, 'diet'), dietData);
-        Alert.alert('Success', 'Diet entry added successfully.');
-      }
-      navigation.goBack();
-      setIsSpecialConfirmed(false)
-    } catch (error) {
-      console.error('Error saving diet entry:', error);
-      Alert.alert('Error', 'There was an error saving the diet entry.');
+    if (!description) {
+      Alert.alert('Invalid Input', 'Please enter diet description.');
+      return;
     }
+    if (!calories || isNaN(calories) || Number(calories) < 0 || !Number.isInteger(Number(calories))) {
+      Alert.alert('Invalid Input', 'Calories must be a valid integer.');
+      return;
+    }
+    if (!date) {
+      Alert.alert('Invalid Input', 'Date should not be empty.');
+      return;
+    }
+    // Confirmation Alert before saving
+    Alert.alert(
+      'Confirm Save',
+      'Are you sure you want to save this diet entry?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Save',
+          onPress: async () => {
+            // Update isSpecial only if editing an existing entry with checkbox
+            const finalSpecialStatus = entryId ? isSpecialConfirmed : isSpecial;
+  
+            const dietData = {
+              description,
+              calories: Number(calories),
+              date: date ? date.toISOString() : null,
+              isSpecial: finalSpecialStatus, // Final special status based on conditions
+            };
+  
+            try {
+              if (entryId) {
+                const docRef = doc(database, 'diet', entryId);
+                await updateDoc(docRef, dietData);
+                Alert.alert('Success', 'Diet entry updated successfully.');
+              } else {
+                await addDoc(collection(database, 'diet'), dietData);
+                Alert.alert('Success', 'Diet entry added successfully.');
+              }
+              navigation.goBack();
+              setIsSpecialConfirmed(false);
+            } catch (error) {
+              console.error('Error saving diet entry:', error);
+              Alert.alert('Error', 'There was an error saving the diet entry.');
+            }
+          },
+        },
+      ]
+    );
   };
+  
+
+
+  const handleDelete = () => {
+    Alert.alert('Delete Entry', 'Are you sure you want to delete this entry?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await deleteDocument('diet', entryId); // Pass collection name and doc ID
+            Alert.alert('Success', 'Entry deleted successfully.');
+            navigation.goBack();
+          } catch (error) {
+            console.error('Error deleting entry:', error);
+            Alert.alert('Error', 'There was an error deleting the entry.');
+          }
+        },
+      },
+    ]);
+  };
+
 
   return (
     <View style={{ flex: 1, padding: 20, backgroundColor: themeStyles[theme].backgroundColor }}>

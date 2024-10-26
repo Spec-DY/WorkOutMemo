@@ -15,17 +15,6 @@ export const AppProvider = ({ children }) => {
   const toggleTheme = () => {
     setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
   };
-
-  const addActivity = (newActivity) => {
-    console.log(newActivity)
-    setActivities([...activities, { id: activities.length + 1, ...newActivity }]);
-  };
-
-  const addDietEntry = (newDietEntry) => {
-    console.log(newDietEntry)
-    setDiet([...diet, { id: diet.length + 1, ...newDietEntry }]);
-  };
-
   const themeStyles = {
     light: {
       backgroundColor: 'white',
@@ -40,7 +29,7 @@ export const AppProvider = ({ children }) => {
   };
 
   return (
-    <AppContext.Provider value={{ activities, diet, addActivity, addDietEntry, theme, toggleTheme, themeStyles }}>
+    <AppContext.Provider value={{ theme, toggleTheme, themeStyles }}>
       {children}
     </AppContext.Provider>
   );
