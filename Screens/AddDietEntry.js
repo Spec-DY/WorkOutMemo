@@ -97,7 +97,8 @@ const AddDietEntry = ({ navigation, route }) => {
           text: 'Save',
           onPress: async () => {
             // Update isSpecial only if editing an existing entry with checkbox
-            const finalSpecialStatus = entryId ? isSpecialConfirmed : isSpecial;
+            // isSpecialConfirmed will reset to false after every save
+            const finalSpecialStatus = isSpecialConfirmed ? false : isSpecial;
   
             const dietData = {
               description,

@@ -99,7 +99,7 @@ const AddActivity = ({ navigation, route }) => {
         {
           text: 'Save',
           onPress: async () => {
-            const finalSpecialStatus = entryId ? isSpecialConfirmed : isSpecial;
+            const finalSpecialStatus = isSpecialConfirmed ? false : isSpecial;
   
             const activityData = {
               type: activityType,
