@@ -9,6 +9,7 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox';
 import commonStyles from '../Styles/styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { deleteDocument } from '../firebase/firebaseHelper';
+import PressableButton from '../Components/PressableButton';
 
 const AddActivity = ({ navigation, route }) => {
   const { theme, themeStyles } = useContext(AppContext);
@@ -221,9 +222,21 @@ const AddActivity = ({ navigation, route }) => {
         />
       )}
 
-      <Button title="Save" onPress={handleSave} />
-      <View style={{ margin: 10 }} />
-      <Button title="Cancel" onPress={() => navigation.goBack()} />
+      <View>
+        <PressableButton onPress={handleSave}>
+
+            <Text>Save</Text>
+
+        </PressableButton>
+
+        <View style={{ margin: 10 }} />
+
+        <PressableButton onPress={() => navigation.goBack()}>
+
+            <Text>Cancel</Text>
+
+        </PressableButton>
+      </View>
     </View>
   );
 };

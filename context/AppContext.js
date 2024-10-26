@@ -18,7 +18,7 @@ export const AppProvider = ({ children }) => {
       buttonColor: buttonColorLight
     },
     dark: {
-      backgroundColor: 'black',
+      backgroundColor: 'grey',
       textColor: 'white',
       buttonColor: buttonColorDark
     }

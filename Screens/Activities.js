@@ -16,8 +16,8 @@ const Activities = ({navigation}) => {
     navigation.setOptions({
       headerRight: () => (
         <PressableButton onPress={() => navigation.navigate('AddActivity')}>
-          <Icon name="plus" size={24} color={themeStyles[theme].textColor}/>
-          <MaterialCommunityIcons name="run-fast" size={24} color={themeStyles[theme].textColor} style={{ marginHorizontal: 5 }} />
+          <Icon name="plus" size={24} color='black'/>
+          <MaterialCommunityIcons name="run-fast" size={24} color='black' style={{ marginHorizontal: 5 }} />
         </PressableButton>
       ),
     });
