@@ -6,10 +6,6 @@ import { buttonColorLight, buttonColorDark } from '../Styles/colors';
 export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  const [activities, setActivities] = useState([]);
-  
-  const [diet, setDiet] = useState([]);
-
   const [theme, setTheme] = useState('light');
 
   const toggleTheme = () => {
